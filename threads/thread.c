@@ -571,9 +571,7 @@ schedule (void)
 }
 
 void print_thread_info(struct thread* the_thread){
-  printf("\n Name thread = %s \n",the_thread->name);
-  printf("\n Tid thread = %d \n",the_thread->tid);
-  printf("\n State thread = %d \n",the_thread->status);
+  printf("\n Name thread = %s ,Tid thread = %ld, State thread = %d \n",the_thread->name, (long)the_thread->tid, the_thread->status);
 }
 
 /* Returns a tid to use for a new thread. */
@@ -585,6 +583,8 @@ allocate_tid (void)
 
   lock_acquire (&tid_lock);
   tid = next_tid++;
+  //next_tid = next_tid*3;
+  //tid = next_tid;
   lock_release (&tid_lock);
 
   return tid;

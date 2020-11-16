@@ -40,6 +40,9 @@ static struct test tests[] =
     {"mlfqs-block", test_mlfqs_block},
     {"my_test ", my_test },
     {"my_test_create_threads", my_test_create_threads },
+    {"my_test_synch_sema", my_test_synch_sema},
+    {"my_test_synch_lock", my_test_synch_lock},
+    {"my_test_producer_consumer", my_test_producer_consumer},
   };
 
 static const char *test_name;
@@ -140,6 +143,16 @@ run_test (const char *name)
 
   tests[28].name = "my_test_create_threads";
   tests[28].function = my_test_create_threads;
+
+  tests[29].name = "my_test_synch_sema";
+  tests[29].function = my_test_synch_sema;
+
+  tests[30].name = "my_test_synch_lock";
+  tests[30].function = my_test_synch_lock;
+
+  tests[31].name = "my_test_producer_consumer";
+  tests[31].function = my_test_producer_consumer;
+
   // END - added at UTCN (2018)
 
   for (t = tests; t < tests + sizeof tests / sizeof *tests; t++)

@@ -48,7 +48,18 @@ sema_init (struct semaphore *sema, unsigned value)
 
   sema->value = value;
   list_init (&sema->waiters);
+  sema->name = "noname";
 }
+
+void sema_init_name(struct semaphore *sema, unsigned value, const char *name)
+{
+  ASSERT (sema != NULL);
+
+  sema->value = value;
+  list_init (&sema->waiters);
+  sema->name = name;
+}
+
 
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
    to become positive and then atomically decrements it.
@@ -60,6 +71,8 @@ sema_init (struct semaphore *sema, unsigned value)
 void
 sema_down (struct semaphore *sema) 
 {
+  if (strcmp(sema->name,"noname")!=0)
+    printf("\n--DOWN Semaphore named: %s called by thread with tid: %ld--\n", sema->name, (long)thread_current()->tid);
   enum intr_level old_level;
 
   ASSERT (sema != NULL);
@@ -108,6 +121,9 @@ sema_try_down (struct semaphore *sema)
 void
 sema_up (struct semaphore *sema) 
 {
+  //printf("\n-- Sema UP, name: %s --\n",sema->name);
+  if (strcmp(sema->name,"noname")!=0)
+    printf("\n--UP Semaphore named: %s called by thread with tid: %ld--\n", sema->name, (long)thread_current()->tid);
   enum intr_level old_level;
 
   ASSERT (sema != NULL);
@@ -179,8 +195,17 @@ lock_init (struct lock *lock)
 
   lock->holder = NULL;
   sema_init (&lock->semaphore, 1);
+  lock->name = "noname";
 }
 
+void lock_init_name(struct lock *lock, const char *name)
+{
+  ASSERT (lock != NULL);
+
+  lock->holder = NULL;
+  sema_init (&lock->semaphore, 1);
+  lock->name = name;
+}
 /* Acquires LOCK, sleeping until it becomes available if
    necessary.  The lock must not already be held by the current
    thread.
@@ -200,6 +225,22 @@ lock_acquire (struct lock *lock)
   lock->holder = thread_current ();
 }
 
+void lock_acquire_V2(struct lock *lock)
+{
+   /*enum intr_level old_level;
+
+  ASSERT (lock != NULL);
+  ASSERT (!intr_context ());
+
+  old_level = intr_disable ();
+  while (sema->value == 0) 
+    {
+      list_push_back (&sema->waiters, &thread_current ()->elem);
+      thread_block ();
+    }
+  sema->value--;
+  intr_set_level (old_level);*/
+}
 /* Tries to acquires LOCK and returns true if successful or false
    on failure.  The lock must not already be held by the current
    thread.
@@ -233,6 +274,20 @@ lock_release (struct lock *lock)
 
   lock->holder = NULL;
   sema_up (&lock->semaphore);
+}
+
+void lock_release_V2(struct lock *lock)
+{
+  /*enum intr_level old_level;
+
+  ASSERT (lock != NULL);
+
+  old_level = intr_disable ();
+  if (!list_empty (lock->semaphore->waiters)) 
+    thread_unblock (list_entry (list_pop_front (&sema->waiters),
+                                struct thread, elem));
+  sema->value++;
+  intr_set_level (old_level);*/
 }
 
 /* Returns true if the current thread holds LOCK, false

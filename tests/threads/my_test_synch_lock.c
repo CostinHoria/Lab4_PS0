@@ -11,19 +11,8 @@
 #include "threads/switch.h"
 #include "threads/synch.h"
 #include "threads/vaddr.h"
+#include "threads/thread.h"
 
-void thread_body(void *param){
-    print_thread_info(thread_current());
-}
-
-void my_test_create_threads(void){
-    tid_t t[6];
-    for(int i=1;i<=5;i++)
-    {
-        int id = (int)t;
-        printf("\n id-ul %d\n",id);
-        char* c= "DA";
-        t[i] = thread_create(c,PRI_DEFAULT,thread_body,NULL);
-
-    }
+void my_test_synch_lock(void){
+    printf("\nTEST LOCK\n");
 }
